@@ -8,6 +8,7 @@ public class SlimeMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Transform player;
     private bool isJumping = false;
+    public float JumpPower = 10;
 
     void Start()
     {
@@ -38,6 +39,8 @@ public class SlimeMovement : MonoBehaviour
     {
         if (!isJumping)
         {
+            Vector2 force = new Vector2(rb.velocity.x, JumpPower);
+            rb.AddForce(force, ForceMode2D.Impulse);
             Vector2 direction = (player.position - transform.position).normalized;
             rb.AddForce(direction * jumpForce, ForceMode2D.Impulse);
             isJumping = true;
