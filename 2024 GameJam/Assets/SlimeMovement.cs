@@ -9,6 +9,7 @@ public class SlimeMovement : MonoBehaviour
     private Transform player;
     private bool isJumping = false;
     public float JumpPower = 10;
+    public Animator animator;
 
     public GameObject deathPrefab;
 
@@ -17,6 +18,7 @@ public class SlimeMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player").transform; // Assuming your player has the "Player" tag
         StartCoroutine(JumpCoroutine());
+        animator.SetBool("Jumping", isJumping);
     }
 
     void Update()
@@ -57,6 +59,7 @@ public class SlimeMovement : MonoBehaviour
             Vector2 direction = (player.position - transform.position).normalized;
             rb.AddForce(direction * jumpForce, ForceMode2D.Impulse);
             isJumping = true;
+            
         }
     }
 }
