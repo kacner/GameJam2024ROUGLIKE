@@ -176,12 +176,12 @@ public class PlayerController : MonoBehaviour
        // animator.SetBool("IsJumping", m_Grounded);
 
     }
-    void OnTriggerEnter2D(Collider2D other)
+    /*void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("void"))
         {
           //  healthman.TakeDamage(200);
             Debug.Log("Voided");
         }
-    }
+    }*/
 } 

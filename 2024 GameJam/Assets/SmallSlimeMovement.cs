@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class SlimeMovement : MonoBehaviour
+public class SmallSlimeMovement : MonoBehaviour
 {
     public float jumpForce = 5f;
     public float jumpInterval = 2f;
@@ -9,14 +9,33 @@ public class SlimeMovement : MonoBehaviour
     private Transform player;
     private bool isJumping = false;
     public float JumpPower = 10;
-
-    public GameObject deathPrefab;
+    public float minForce = 5f;
+    public float maxForce = 10f;
+    public float knockbackAngle = 45f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        player = GameObject.FindGameObjectWithTag("Player").transform; // Assuming your player has the "Player" tag
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        ApplyRandomKnockback();
         StartCoroutine(JumpCoroutine());
+    }
+
+    void ApplyRandomKnockback()
+    {
+        // Generate random force magnitude
+        float forceMagnitude = Random.Range(minForce, maxForce);
+
+        // Convert fixed angle to radians
+        float angle = knockbackAngle * Mathf.Deg2Rad;
+
+        // Calculate force components based on angle
+        float forceX = forceMagnitude * Mathf.Cos(angle);
+        float forceY = forceMagnitude * Mathf.Sin(angle);
+
+        Vector2 knockbackForce = new Vector2(forceX, forceY);
+
+        rb.AddForce(knockbackForce, ForceMode2D.Impulse);
     }
 
     void Update()
@@ -43,8 +62,6 @@ public class SlimeMovement : MonoBehaviour
 
     void HandleSlimeDeath()
     {
-        Instantiate(deathPrefab, transform.position, Quaternion.identity);
-        Instantiate(deathPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 
