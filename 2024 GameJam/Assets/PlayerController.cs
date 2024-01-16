@@ -176,6 +176,7 @@ public class PlayerController : MonoBehaviour
        // animator.SetBool("IsJumping", m_Grounded);
 
     }
+<<<<<<< Updated upstream
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("void"))
@@ -185,3 +186,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 } 
+=======
+}
+
+
+
+>>>>>>> Stashed changes
