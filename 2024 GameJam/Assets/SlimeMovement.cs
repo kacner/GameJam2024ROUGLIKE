@@ -18,7 +18,6 @@ public class SlimeMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player").transform; // Assuming your player has the "Player" tag
         StartCoroutine(JumpCoroutine());
-        animator.SetBool("Jumping", isJumping);
     }
 
     void Update()
@@ -28,10 +27,7 @@ public class SlimeMovement : MonoBehaviour
         {
             isJumping = false;
         }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            HandleSlimeDeath();
-        }
+        animator.SetBool("Jumping", isJumping);
     }
 
     IEnumerator JumpCoroutine()
@@ -60,6 +56,14 @@ public class SlimeMovement : MonoBehaviour
             rb.AddForce(direction * jumpForce, ForceMode2D.Impulse);
             isJumping = true;
             
+        }
+    }
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // Check if the colliding object has the specified tag
+        if (other.gameObject.CompareTag("Bullet"))
+        {
+            HandleSlimeDeath();
         }
     }
 }

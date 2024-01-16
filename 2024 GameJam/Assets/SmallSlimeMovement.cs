@@ -12,6 +12,7 @@ public class SmallSlimeMovement : MonoBehaviour
     public float minForce = 5f;
     public float maxForce = 10f;
     public float knockbackAngle = 45f;
+    public Animator animator;
 
     void Start()
     {
@@ -19,6 +20,7 @@ public class SmallSlimeMovement : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         ApplyRandomKnockback();
         StartCoroutine(JumpCoroutine());
+
     }
 
     void ApplyRandomKnockback()
@@ -40,16 +42,17 @@ public class SmallSlimeMovement : MonoBehaviour
 
     void Update()
     {
+        float horizontalVelocity = rb.velocity.x;
+
         // Check if the slime is on the ground (you might need to adjust this based on your game setup)
         if (Mathf.Abs(rb.velocity.y) < 0.01f)
         {
             isJumping = false;
         }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            HandleSlimeDeath();
-        }
+        animator.SetBool("Jumping", isJumping);
+
     }
+
 
     IEnumerator JumpCoroutine()
     {
@@ -63,6 +66,15 @@ public class SmallSlimeMovement : MonoBehaviour
     void HandleSlimeDeath()
     {
         Destroy(gameObject);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // Check if the colliding object has the specified tag
+        if (other.gameObject.CompareTag("Bullet"))
+        {
+            HandleSlimeDeath();
+        }
     }
 
     void JumpTowardsPlayer()

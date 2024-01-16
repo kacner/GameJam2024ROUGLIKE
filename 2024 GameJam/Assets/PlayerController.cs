@@ -241,14 +241,6 @@ public class PlayerController : MonoBehaviour
             dashTimer -= Time.deltaTime;
         }
     }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("void"))
-        {
-            Debug.Log("Voided");
-        }
-    }
 }
 
 
