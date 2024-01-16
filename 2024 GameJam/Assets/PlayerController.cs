@@ -1,6 +1,6 @@
-using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -38,9 +38,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_MaxSpeed = 10f;
     [SerializeField] private float m_Acceleration = 5f;
 
-  //  public Animator animator;
-  //  public healthmanager healthman;
-    private void Awake()
+    // Sprinting Settings
+    [Header("Sprinting Settings")]
+    [SerializeField] private float sprintMultiplier = 1.3f;
+
+    // Dash Settings
+    [Header("Dash Settings")]
+    [SerializeField] private float dashDistance = 5f;
+    [SerializeField] private float dashDuration = 0.2f;
+    [SerializeField] private float dashCooldown = 1f;
+    private bool isDashing = false;
+    private float dashTimer = 0f;
+
+    private Camera mainCam;
+
+    void Awake()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
 
@@ -51,7 +63,12 @@ public class PlayerController : MonoBehaviour
             OnCrouchEvent = new BoolEvent();
     }
 
-    private void FixedUpdate()
+    void Start()
+    {
+        mainCam = Camera.main;
+    }
+
+    void FixedUpdate()
     {
         bool wasGrounded = m_Grounded;
         m_Grounded = false;
@@ -115,6 +132,18 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
+            // Sprinting check
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                move *= sprintMultiplier;
+            }
+
+            // Dash check
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                Dash();
+            }
+
             float targetSpeed = Mathf.MoveTowards(m_Rigidbody2D.velocity.x, move * m_MaxSpeed, m_Acceleration * Time.fixedDeltaTime);
             Vector3 targetVelocity = new Vector2(targetSpeed, m_Rigidbody2D.velocity.y);
 
@@ -137,6 +166,38 @@ public class PlayerController : MonoBehaviour
 
             jumpBufferCounter = 0f;
         }
+    }
+
+    private void Dash()
+    {
+        if (!isDashing && dashTimer <= 0f)
+        {
+            isDashing = true;
+            dashTimer = dashCooldown;
+
+            // Determine dash direction based on mouse position
+            Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 dashDirection = (mousePos - transform.position).normalized;
+
+            // Set the player's velocity to achieve the dash
+            m_Rigidbody2D.velocity = dashDirection * dashDistance / dashDuration;
+
+            Debug.Log($"Dash initiated. Direction: {dashDirection}");
+
+            // Reset dash after a short duration
+            StartCoroutine(ResetDashAfterDelay(dashDuration));
+        }
+    }
+
+    private IEnumerator ResetDashAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ResetDash();
+    }
+
+    private void ResetDash()
+    {
+        isDashing = false;
     }
 
     private void Flip()
@@ -173,15 +234,14 @@ public class PlayerController : MonoBehaviour
         {
             jumpBufferCounter -= Time.deltaTime;
         }
-       // animator.SetBool("IsJumping", m_Grounded);
 
-    }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("void"))
+        // Update dash timer
+        if (dashTimer > 0f)
         {
-          //  healthman.TakeDamage(200);
-            Debug.Log("Voided");
+            dashTimer -= Time.deltaTime;
         }
     }
-} 
+}
+
+
+
