@@ -25,29 +25,25 @@ public class Movements : MonoBehaviour
         animator.SetBool("Attacking", CurrentlyAttacking);
         */
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-        
-        if (crouch)
-        {
-            horizontalMove = Input.GetAxisRaw("Horizontal") * 1;
-        }
+
         if (Stunning)
         {
             horizontalMove = Input.GetAxisRaw("Horizontal") * 0.5f;
         }
 
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             jump = true;
             
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             crouch = true;
 
         }
-        if (Input.GetKeyUp(KeyCode.S))
+        if (Input.GetKeyUp(KeyCode.LeftControl))
         {
             crouch = false;
         }
